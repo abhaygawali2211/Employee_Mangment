@@ -2,6 +2,6 @@ import React from 'react'
 
 export const Leave = () => {
   return (
-    <div>L</div>
+    <div>Leave</div>
   )
 }

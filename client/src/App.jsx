@@ -9,8 +9,8 @@ import { Dashboard } from "./pages/Dashboard"
 import { Employee } from "./pages/Employee"
 import { Payslips } from "./pages/Payslips"
 import { Printpayslips } from "./pages/Printpayslips"
-import { Setting } from "./pages/setting"
-import { Leave } from "./pages/leave"
+import { Setting } from "./pages/Setting"
+import { Leave } from "./pages/Leave"
 import { LoginForm } from "./components/LoginForm"
 
 function App() {
@@ -34,7 +34,7 @@ function App() {
  <Route path="/employee" element={<Employee/>}/>
 <Route path="/payslips" element={<Payslips/>}/>
  
-<Route path="/seeting" element={<Setting/>}/>
+<Route path="/setting" element={<Setting/>}/>
  </Route>
  <Route path="/print/payslips/:id" element={<Printpayslips/>}/>
    
