@@ -28,7 +28,7 @@ export const Sidebar = () => {
     setMobileOpen(false)
   }, [pathname])
 
-  const role = '' || 'EMPLOYEE'
+  const role = 'ADMIN' || 'EMPLOYEE'
 
   const navitems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutGridIcon },
