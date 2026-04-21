@@ -4,7 +4,7 @@ import{Toaster} from "react-hot-toast"
 import { Route,Routes } from "react-router-dom"
 import { LoginLanding } from "./pages/LoginLanding"
 import { Layout } from "./pages/Layout"
-import { Attendence } from "./pages/Attendence"
+import { Attendance } from "./pages/Attendance"
 import { Dashboard } from "./pages/Dashboard"
 import { Employee } from "./pages/Employee"
 import { Payslips } from "./pages/Payslips"
@@ -29,7 +29,7 @@ function App() {
 
 <Route element={<Layout/>}>
 <Route path="/leave" element={<Leave/>}/>
- <Route path="/attendance" element={<Attendence/>}/>
+ <Route path="/attendance" element={<Attendance/>}/>
 <Route path="/dashboard" element={<Dashboard/>}/>
  <Route path="/employee" element={<Employee/>}/>
 <Route path="/payslips" element={<Payslips/>}/>
