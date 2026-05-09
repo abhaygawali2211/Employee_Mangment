@@ -2,7 +2,7 @@ import { DEPARTMENTS } from "../constent/departments.js";
 import Employee from "../models/Employee.js";
 import LeaveApplication from "../models/LeaveApplication.js";
 import Attendance from "../models/Attendance.js";
-import Payslip from "../models/Payslip.js";
+import Payslip from "../models/payslips.js";
 
 export const getDashboard = async (req, res) => {
   try {

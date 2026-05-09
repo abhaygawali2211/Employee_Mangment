@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
  
-    "start": "nodemon server.js"
+"start": "nodemon server.js",
+    "seeds":"node seeds.js"
   },
   "keywords": [],
   "author": "",
