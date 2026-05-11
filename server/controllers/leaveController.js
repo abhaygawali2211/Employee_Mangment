@@ -1,6 +1,7 @@
 import LeaveApplication from "../models/LeaveApplication.js";
 import Employee from "../models/Employee.js";
 import { session } from "./authControllers.js";
+import { inngest } from "../inngest/index.js";
 
 export const createLeave = async (req, res) => {
   try {
@@ -37,6 +38,8 @@ export const createLeave = async (req, res) => {
       });
     }
 
+
+
     const leave = await LeaveApplication.create({
       employeeId: employee._id,
       type,
@@ -45,6 +48,11 @@ export const createLeave = async (req, res) => {
       reason,
       status: "PENDING",
     });
+    await inngest.send({
+      name: "leave/pending",
+      data:{leaveApplicationId:leave._id}
+
+    })
 
     return res.status(201).json({ success: true, data:leave });
   } catch (error) {
