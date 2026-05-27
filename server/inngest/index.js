@@ -232,6 +232,7 @@ const attendanceReminderCron = inngest.createFunction(
           })
         });
         await Promise.all(emailPromises)
+        return {emailsSenet:absentEmployees.length}
       });
     }
 
