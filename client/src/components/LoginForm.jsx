@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { ArrowLeft, EyeIcon, EyeOffIcon, Loader2Icon } from 'lucide-react'
 import { Loginleftside } from './Loginleftside'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/Authcontext'
+import { toast } from 'react-hot-toast'
 
 export const LoginForm = ({ role, title, subtitle }) => {
   const [form, setForm] = useState({
@@ -12,6 +14,9 @@ export const LoginForm = ({ role, title, subtitle }) => {
   const [errors, setErrors] = useState({})
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -41,11 +46,23 @@ export const LoginForm = ({ role, title, subtitle }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!validate()) return
+    setErrors({})
+    setLoading(true)
+
+    if (!validate()) {
+      setLoading(false)
+      return
+    }
 
     try {
-      setLoading(true)
-      console.log(role, form) // API call here
+      await login(form.email, form.password, role)
+      navigate("/dashboard")
+    } catch (error) {
+      toast.error(
+        error.response?.data?.error ||
+        error.message ||
+        "Login Failed"
+      )
     } finally {
       setLoading(false)
     }
@@ -126,7 +143,7 @@ export const LoginForm = ({ role, title, subtitle }) => {
               className='w-full bg-indigo-600 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 disabled:opacity-60'
             >
               {loading && <Loader2Icon className="animate-spin h-4 w-4" />}
-              {loading ? 'Please wait...' : 'sign in'}
+              {loading ? 'Please wait...' : 'Sign in'}
             </button>
 
           </form>

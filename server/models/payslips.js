@@ -35,7 +35,7 @@ const payslipSchema = new mongoose.Schema(
 // Same employee same date duplicate entry na ho
 
 const payslip =
-  mongoose.models.Attendance ||
+  mongoose.models.payslip ||
   mongoose.model("payslip", payslipSchema)
 
 export default payslip

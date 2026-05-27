@@ -6,28 +6,22 @@ import {
 import { Loading } from "../components/Loading";
 import { EmployeeDashboard } from "../components/EmployeeDashboard";
 import { AdminDashBoard } from "../components/AdminDashBoard";
-
+import api from "../api/axios"
 export const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
-    // 👇 yaha role decide karo
-    const role = "ADMIN"; // test ke liye
+  api.get('/dashboard')
+    .then((res) => setData(res.data))
+    .catch((err) =>
+      toast.error(err.response?.data?.error || err.message)
+    )
+    .finally(() => setLoading(false));
+}, []);
 
-    if (role === "ADMIN") {
-      setData(dummyAdminDashboardData);
-    } else {
-      setData(dummyEmployeeDashboardData);
-    }
-
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
+  
   if (loading) return <Loading />;
 
   if (!data)
@@ -38,7 +32,7 @@ export const Dashboard = () => {
     );
 
   if (data.role === "ADMIN") {
-    return <AdminDashBoard/>;
+    return <AdminDashBoard data={data}/>;
   }
 
   return <EmployeeDashboard data={data} />;
