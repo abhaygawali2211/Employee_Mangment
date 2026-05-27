@@ -231,6 +231,7 @@ const attendanceReminderCron = inngest.createFunction(
 </div> `
           })
         });
+        await Promise.all(emailPromises)
       });
     }
 

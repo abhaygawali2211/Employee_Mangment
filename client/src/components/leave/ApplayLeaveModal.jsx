@@ -1,14 +1,21 @@
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
+import api from "../../api/axios"; 
 
 export const ApplayLeaveModal = ({ open, onClose, onSuccess }) => {
   const [loading, setLoading] = useState(false);
+
+  const [form, setForm] = useState({
+    type: "SICK",
+    startDate: "",
+    endDate: "",
+    reason: "",
+  });
 
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
   const minDate = tomorrow.toISOString().split("T")[0];
-
-
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,11 +25,16 @@ export const ApplayLeaveModal = ({ open, onClose, onSuccess }) => {
     e.preventDefault();
     setLoading(true);
 
-    // yaha API ya parent call hoga
-    onSuccess(form);
-
-    setLoading(false);
-    onClose();
+    try {
+      await api.post("/leave", form); // ✅ direct form bhejo
+      toast.success("Leave applied successfully");
+      onSuccess();
+      onClose();
+    } catch (error) {
+      toast.error(error.response?.data?.error || error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!open) return null;
@@ -34,23 +46,16 @@ export const ApplayLeaveModal = ({ open, onClose, onSuccess }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white w-full max-w-lg rounded-2xl shadow-xl p-6 space-y-5 animate-fadeIn"
+        className="bg-white w-full max-w-lg rounded-2xl shadow-xl p-6 space-y-5"
       >
-        <h2 className="text-xl font-semibold text-gray-800">
-          Apply Leave
-        </h2>
+        <h2 className="text-xl font-semibold text-gray-800">Apply Leave</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-          
-          
-          </div>
-
           <select
             name="type"
             value={form.type}
             onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full border rounded-lg px-3 py-2"
           >
             <option value="SICK">Sick Leave</option>
             <option value="CASUAL">Casual Leave</option>

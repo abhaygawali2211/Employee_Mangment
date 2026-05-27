@@ -9,20 +9,31 @@ import {
 } from "lucide-react";
 import { LeaveHistory } from "../components/leave/LeaveHistory";
 import { ApplayLeaveModal } from "../components/leave/ApplayLeaveModal";
+import { useAuth } from "../context/Authcontext";
+import toast from "react-hot-toast";
+import api from "../api/axios";
 
 export const Leave = () => {
+  const {user}=useAuth()
   const [leave, setLeave] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
 
-  const isAdmin = false;
+  const isAdmin = user?.role==="ADMIN";
 
-  const fetchLeaves = useCallback(() => {
-    setLeave(dummyLeaveData);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+  const fetchLeaves = useCallback(async() => {
+   
+   try {
+     const res=await api.get(`/leave`)
+    setLeave(res.data.data||[])
+    if(res.data.employee?.isDeleted) setIsDeleted(true)
+    
+   } catch (error) {
+    toast.error(error?.response?.data?.error|| error.message)
+   }finally{
+    setLoading(false)
+   }
   }, []);
 
   useEffect(() => {

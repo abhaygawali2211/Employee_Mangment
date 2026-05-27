@@ -4,6 +4,7 @@ import { Plus, Search } from "lucide-react";
 import { EmployeeCard } from "../components/EmployeeCard";
 import { Loading } from "../components/Loading";
 import { Employeefrom } from "../components/Employeefrom";
+import api from "../api/axios";
 
 export const Employee = () => {
   const [employee, setemployee] = useState([]);
@@ -11,18 +12,21 @@ export const Employee = () => {
   const [search, setSearch] = useState("");
   const [selectedDept, setSelectedDept] = useState("");
   const [editEmployee, seteditemployee] = useState(null);
-  const [showCreateModal, setShowCreateMoadal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const fetchEmoloyee = useCallback(async () => {
-    setloading(true);
-    setemployee(
-      dummyEmployeeData.filter((emp) =>
-        selectedDept ? emp.department === selectedDept : emp
-      )
-    );
-    setTimeout(() => {
+    try {
+      const url = selectedDept
+        ? `/employees?department=${selectedDept}`
+        : "/employees";
+
+      const res = await api.get(url);
+      setemployee(res.data);   // ✅ yaha galti thi (setEmployees)
+    } catch (error) {
+      console.error("Failed to fetch employees");
+    } finally {
       setloading(false);
-    }, 1000);
+    }
   }, [selectedDept]);
 
   useEffect(() => {
@@ -45,7 +49,7 @@ export const Employee = () => {
         </div>
 
         <button
-          onClick={() => setShowCreateMoadal(true)}
+          onClick={() => setShowCreateModal(true)}
           className="flex items-center justify-center gap-2 w-full md:w-auto mt-4 md:mt-0 bg-blue-600 text-white px-5 py-2.5 rounded-lg shadow hover:bg-blue-700 active:scale-[0.98] transition text-sm font-medium"
         >
           <Plus size={18} />
@@ -105,7 +109,7 @@ export const Employee = () => {
       {/* Create Employee Modal */}
       {showCreateModal && (
         <div
-          onClick={() => setShowCreateMoadal(false)}
+          onClick={() => setShowCreateModal(false)}
           className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
         >
           <div
@@ -121,20 +125,20 @@ export const Employee = () => {
               </div>
 
               <button
-                onClick={() => setShowCreateMoadal(false)}
+                onClick={() => setShowCreateModal(false)}
                 className="text-slate-400 hover:text-red-500 text-lg"
               >
                 ✕
               </button>
             </div>
 
-            <Employeefrom 
-             onSuccess={()=>{setShowCreateMoadal(false);
-
-              fetchEmoloyee();
-
-             }} onCancel={()=>setShowCreateMoadal(false)}/>
-           
+            <Employeefrom
+              onSuccess={() => {
+                setShowCreateModal(false);
+                fetchEmoloyee();
+              }}
+              onCancel={() => setShowCreateModal(false)}
+            />
           </div>
         </div>
       )}
@@ -165,12 +169,14 @@ export const Employee = () => {
               </button>
             </div>
 
-            <Employeefrom inisialData={editEmployee}
-             onSuccess={()=>{seteditemployee(null);
-
-              fetchEmoloyee();
-
-             }} onCancel={()=>seteditemployee(null)}/>
+            <Employeefrom
+              inisialData={editEmployee}
+              onSuccess={() => {
+                seteditemployee(null);
+                fetchEmoloyee();
+              }}
+              onCancel={() => seteditemployee(null)}
+            />
           </div>
         </div>
       )}

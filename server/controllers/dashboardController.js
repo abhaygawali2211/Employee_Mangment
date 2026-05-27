@@ -9,34 +9,69 @@ export const getDashboard = async (req, res) => {
     const session = req.session;
 
     if (session.role === "ADMIN") {
-      const [totalEmployees, todayAttendance, pendingLeaves] =
-        await Promise.all([
-          Employee.countDocuments({ isDeleted: { $ne: true } }),
 
-          Attendance.countDocuments({
-            date: {
-              $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+      // ✅ Today Present Employee List
+      const todayPresentEmployees =
+        await Attendance.find({
+          date: {
+            $gte: new Date(
+              new Date().setHours(0, 0, 0, 0)
+            ),
 
-              $lt: new Date(new Date().setHours(24, 0, 0, 0)),
-            },
-          }),
+            $lt: new Date(
+              new Date().setHours(24, 0, 0, 0)
+            ),
+          },
+        })
+          .populate("employeeId")
+          .sort({ checkIn: -1 });
 
-          LeaveApplication.countDocuments({
-            status: "PENDING",
-          }),
-        ]);
+      const [
+        totalEmployees,
+        todayAttendance,
+        pendingLeaves,
+      ] = await Promise.all([
+        Employee.countDocuments({
+          isDeleted: { $ne: true },
+        }),
+
+        Attendance.countDocuments({
+          date: {
+            $gte: new Date(
+              new Date().setHours(0, 0, 0, 0)
+            ),
+
+            $lt: new Date(
+              new Date().setHours(24, 0, 0, 0)
+            ),
+          },
+        }),
+
+        LeaveApplication.countDocuments({
+          status: "PENDING",
+        }),
+      ]);
 
       return res.json({
         role: "ADMIN",
+
         totalEmployees,
-        totalDepartments: DEPARTMENTS.length,
+
+        totalDepartments:
+          DEPARTMENTS.length,
+
         todayAttendance,
+
         pendingLeaves,
+
+        // ✅ Send Employee List
+        todayPresentEmployees,
       });
     } else {
-      const employee = await Employee.findOne({
-        userId: session.userId,
-      }).lean();
+      const employee =
+        await Employee.findOne({
+          userId: session.userId,
+        }).lean();
 
       if (!employee)
         return res.status(404).json({
@@ -91,6 +126,7 @@ export const getDashboard = async (req, res) => {
         },
 
         currentMonthAttendance,
+
         pendingLeaves,
 
         latestPayslip: latestPayslip

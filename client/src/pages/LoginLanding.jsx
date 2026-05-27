@@ -2,7 +2,9 @@ import React from 'react'
 import { Loginleftside } from '../components/Loginleftside'
 import { ArrowRight, ShieldIcon, UserIcon } from "lucide-react"
 import { Link } from 'react-router-dom'
-
+import { useAuth } from '../context/Authcontext'
+import { Loading } from '../components/Loading'
+import { Navigate } from 'react-router-dom'
 const portalOptions = [
   {
     to: "/login/admin",
@@ -19,6 +21,13 @@ const portalOptions = [
 ]
 
 export const LoginLanding = () => {
+
+   const{user,loading}=useAuth()
+
+  if(loading) return<Loading/>
+  if(user) return<Navigate to="/" />
+
+
   return (
     <div className='min-h-screen flex flex-col md:flex-row'>
       <Loginleftside />
