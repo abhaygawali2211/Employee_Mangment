@@ -3,7 +3,7 @@ import { dummyProfileData } from "../assets/assets";
 import { Loading } from "../components/Loading";
 import { Lock } from "lucide-react";
 import { ProfileForm } from "../components/ProfileForm";
-import { ChangePassword } from "../components/changePassword";
+import { ChangePassword } from "../components/ChangePassword";
 import toast from "react-hot-toast";
 import api from "../api/axios";
 import{useAuth} from "../context/Authcontext"
